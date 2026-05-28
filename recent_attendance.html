@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recent Attendance — EduFy</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{display:flex;min-height:100vh;background:#f5f9ff;color:#333}
+    .header{position:fixed;top:0;left:0;right:0;height:60px;background:#007bff;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 20px;box-shadow:0 2px 6px rgba(0,0,0,.1);z-index:1000}
+    .header h1{font-size:18px}
+    .back-link{color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+    .back-link:hover{opacity:0.8}
+    .logout{background:#fff;color:#007bff;border:none;padding:8px 14px;border-radius:5px;cursor:pointer;font-weight:bold}
+    .sidebar{position:fixed;top:60px;left:0;width:60px;height:calc(100% - 60px);background:#e6f0ff;padding-top:20px;display:flex;flex-direction:column;gap:6px;transition:width 0.3s;overflow:hidden}
+    .sidebar.open{width:220px}
+    .sidebar a{text-decoration:none;color:#007bff;font-weight:bold;padding:10px 15px;transition:0.3s;display:flex;align-items:center;gap:10px;white-space:nowrap}
+    .sidebar a:hover,.sidebar a.active{background:#007bff;color:#fff;border-radius:5px}
+    .sidebar a span{opacity:0;transition:opacity 0.2s}
+    .sidebar.open a span{opacity:1}
+    .menu-btn{position:fixed;top:16px;left:80px;background:transparent;border:none;font-size:22px;color:#fff;cursor:pointer;z-index:1001}
+    .content{margin-left:60px;padding:80px 24px 30px;flex:1}
+    .content h2{color:#007bff;margin-bottom:20px}
+    .card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px}
+    /* Filters */
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
+    .filters label{font-size:12px;color:#888;font-weight:600;display:block;margin-bottom:3px}
+    .filters select,.filters input{padding:8px 10px;border:1px solid #cfd9ea;border-radius:8px;font-size:13px;outline:none;transition:0.2s}
+    .filters select:focus,.filters input:focus{border-color:#007bff}
+    .btn{background:#007bff;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:0.2s}
+    .btn:hover{background:#0056b3}
+    .btn-outline{background:#fff;color:#007bff;border:1px solid #007bff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+    .btn-outline:hover{background:#e0ebff}
+    /* Stats */
+    .att-stats{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+    .att-stat{flex:1;min-width:110px;background:#f8faff;border:1px solid #dde8ff;padding:14px;border-radius:10px;text-align:center}
+    .att-stat .av{font-size:22px;font-weight:800;color:#007bff}
+    .att-stat .al{font-size:11px;color:#888;text-transform:uppercase;margin-top:3px}
+    .att-stat.green{border-color:#c8e6c9;background:#f5fff8}.att-stat.green .av{color:#28a745}
+    .att-stat.red  {border-color:#ffcdd2;background:#fff5f5}.att-stat.red   .av{color:#dc3545}
+    /* Table */
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 12px;border-bottom:1px solid #eef5ff;text-align:left;font-size:13px}
+    th{background:#007bff;color:white}
+    tr:hover{background:#f8fbff}
+    .chip-present{display:inline-block;background:#e0ffe8;color:#28a745;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+    .chip-absent {display:inline-block;background:#ffe0e0;color:#dc3545;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+    /* Pagination */
+    .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:14px}
+    .pager-info{font-size:13px;color:#888;margin-right:auto}
+    .empty{text-align:center;padding:24px;color:#888;font-size:13px}
+    .back-btn{background:#007bff;color:#fff;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;margin-bottom:18px}
+    .back-btn:hover{background:#0056b3}
+  </style>
+</head>
+<body>
+<header class="header">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <h1>Recent Attendance — EduFy</h1>
+  </div>
+  <button class="logout" onclick="window.location.href='login.html'">Logout</button>
+</header>
+
+<aside class="sidebar" id="sidebar">
+  <a href="student_dashboard.html">🏠 <span>Home</span></a>
+  <a href="timetables.html">📅 <span>Timetable</span></a>
+  <a href="recent_attendance.html" class="active">🧾 <span>Attendance</span></a>
+  <a href="login.html">🚪 <span>Logout</span></a>
+</aside>
+
+<main class="content">
+  <button class="back-btn" onclick="window.location.href='student_dashboard.html'">← Back to Dashboard</button>
+  <h2>🧾 My Attendance Records</h2>
+
+  <!-- Stats -->
+  <div class="att-stats">
+    <div class="att-stat">       <div class="av" id="stat-total">—</div><div class="al">Total Classes</div></div>
+    <div class="att-stat green"> <div class="av" id="stat-present">—</div><div class="al">Present</div></div>
+    <div class="att-stat red">   <div class="av" id="stat-absent">—</div><div class="al">Absent</div></div>
+    <div class="att-stat">       <div class="av" id="stat-pct">—</div><div class="al">Attendance %</div></div>
+  </div>
+
+  <div class="card">
+    <!-- Filters -->
+    <div class="filters">
+      <div>
+        <label>Subject</label>
+        <select id="f-subject"><option value="">All Subjects</option></select>
+      </div>
+      <div>
+        <label>From Date</label>
+        <input type="date" id="f-from"/>
+      </div>
+      <div>
+        <label>To Date</label>
+        <input type="date" id="f-to"/>
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="f-status">
+          <option value="">All</option>
+          <option value="present">Present</option>
+          <option value="absent">Absent</option>
+        </select>
+      </div>
+      <div style="align-self:flex-end;">
+        <button class="btn"         onclick="loadPage(0)">Filter</button>
+        <button class="btn-outline" onclick="clearFilters()" style="margin-left:6px;">Clear</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <table>
+      <thead>
+        <tr><th>#</th><th>Subject</th><th>Class Group</th><th>Status</th><th>Marked At</th><th>Start Time</th><th>Teacher</th></tr>
+      </thead>
+      <tbody id="att-tbody">
+        <tr><td colspan="7" class="empty">Loading...</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pager">
+      <div class="pager-info" id="pager-info"></div>
+      <button class="btn-outline" id="prev-btn" onclick="loadPage(currentPage-1)">← Prev</button>
+      <button class="btn"         id="next-btn" onclick="loadPage(currentPage+1)">Next →</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+  const API      = 'http://localhost:5002/api';
+  const PAGE_SIZE= 12;
+  let currentPage= 0;
+  let totalRows  = 0;
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    const studentId = localStorage.getItem('studentId');
+    if (!studentId) { window.location.href='login.html'; return; }
+    await loadSubjectFilter(studentId);
+    await loadPage(0);
+
+    // Realtime
+    const socket = io('http://localhost:5002', { transports:['websocket'] });
+    socket.on('attendance-updated', payload => {
+      if (payload && String(payload.studentId) === String(studentId)) loadPage(currentPage);
+    });
+  });
+
+  async function loadSubjectFilter(studentId) {
+    try {
+      const res = await fetch(`http://localhost:5002/students/${studentId}/timetable`);
+      const cls = await res.json();
+      const sel = document.getElementById('f-subject');
+      [...new Set((cls||[]).map(c=>c.subject).filter(Boolean))].sort().forEach(s => {
+        const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
+      });
+    } catch(e) {}
+  }
+
+  async function loadPage(page=0) {
+    const studentId = localStorage.getItem('studentId');
+    currentPage = Math.max(0, page);
+    const params = new URLSearchParams({
+      studentId, limit: PAGE_SIZE, skip: currentPage * PAGE_SIZE
+    });
+    const sub    = document.getElementById('f-subject').value;
+    const from   = document.getElementById('f-from').value;
+    const to     = document.getElementById('f-to').value;
+    const status = document.getElementById('f-status').value;
+    if (sub)    params.append('subject', sub);
+    if (from)   params.append('from', from);
+    if (to)     params.append('to', to);
+    if (status) params.append('status', status);
+
+    const tbody = document.getElementById('att-tbody');
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+
+    try {
+      const res  = await fetch(`${API}/attendance/student?${params}`);
+      const data = await res.json();
+      const rows = data.rows || [];
+      totalRows  = data.total || 0;
+
+      if (!rows.length) { tbody.innerHTML='<tr><td colspan="7" class="empty">No records found</td></tr>'; }
+      else {
+        tbody.innerHTML = rows.map((r,i)=>`
+          <tr>
+            <td>${currentPage*PAGE_SIZE+i+1}</td>
+            <td><strong>${r.subject||'—'}</strong></td>
+            <td>${r.classGroup||'—'}</td>
+            <td><span class="chip-${r.status==='present'?'present':'absent'}">${(r.status||'—').toUpperCase()}</span></td>
+            <td>${r.markedAt ? new Date(r.markedAt).toLocaleString() : '—'}</td>
+            <td>${r.startTime||'—'}</td>
+            <td>${r.teacher||'—'}</td>
+          </tr>`).join('');
+      }
+
+      // Stats from full records
+      const presents= rows.filter(r=>r.status==='present').length;
+      const absents = rows.filter(r=>r.status==='absent').length;
+      document.getElementById('stat-total').textContent   = totalRows;
+      document.getElementById('stat-present').textContent = presents;
+      document.getElementById('stat-absent').textContent  = absents;
+      document.getElementById('stat-pct').textContent     = totalRows ? Math.round((presents/rows.length)*100)+'%' : '—';
+
+      const totalPages = Math.max(1, Math.ceil(totalRows/PAGE_SIZE));
+      document.getElementById('pager-info').textContent = `Page ${currentPage+1} of ${totalPages} (${totalRows} total)`;
+      document.getElementById('prev-btn').disabled = currentPage===0;
+      document.getElementById('next-btn').disabled = (currentPage+1)*PAGE_SIZE >= totalRows;
+    } catch(e) {
+      tbody.innerHTML='<tr><td colspan="7" class="empty" style="color:#dc3545;">Failed to load records</td></tr>';
+    }
+  }
+
+  function clearFilters() {
+    ['f-subject','f-status'].forEach(id=>document.getElementById(id).value='');
+    ['f-from','f-to'].forEach(id=>document.getElementById(id).value='');
+    loadPage(0);
+  }
+</script>
+</body>
+</html>

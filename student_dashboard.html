@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard — EduFy</title>
+  <link rel="stylesheet" href="student_dashboard.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <h1>EduFy Dashboard</h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <div class="notification-container">
+      <div class="bell-icon" onclick="toggleBell()">🔔
+        <span id="bell-badge" class="badge" style="display:none;">0</span>
+      </div>
+      <ul id="bell-dropdown" class="dropdown"><li>Loading...</li></ul>
+    </div>
+    <button class="logout" onclick="window.location.href='login.html'">Logout</button>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="leftSidebar">
+  <a href="student_dashboard.html" class="active-link">🏠 <span>Home</span></a>
+  <a href="#" onclick="scrollToEl('announcements-sec')">📢 <span>Announcements</span></a>
+  <a href="timetables.html">📅 <span>My Timetable</span></a>
+  <a href="recent_attendance.html">🧾 <span>Recent Attendance</span></a>
+  <a href="#" id="open-quiz-link">📋 <span>Questionnaire</span></a>
+  <a href="#" id="open-mentor-link">👨‍🏫 <span>My Mentor</span></a>
+  <a href="#" id="open-notifs-link">🔔 <span>Smart Notifications</span></a>
+  <a href="#" id="settings-link">⚙️ <span>Settings ▾</span></a>
+  <div class="submenu" id="settings-submenu">
+    <a href="#">👤 Profile</a>
+    <a href="login.html">🚪 Logout</a>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+  <h2 id="welcome">Welcome, Student 👩‍🎓</h2>
+
+  <!-- Stat Cards -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="s-label">Quiz Score</div>
+      <div class="s-val" id="stat-score">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Performance Level</div>
+      <div class="s-val" id="stat-level">—</div>
+    </div>
+    <div class="stat-card green">
+      <div class="s-label">Mentor Assigned</div>
+      <div class="s-val" id="stat-mentor">—</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="s-label">Notifications</div>
+      <div class="s-val" id="stat-notifs">—</div>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div id="student-info" class="data-section">
+    <h3>👤 My Profile</h3>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Announcements -->
+  <div class="data-section" id="announcements-sec">
+    <h3>📢 Announcements</h3>
+    <ul id="announcement-list"><li>Loading...</li></ul>
+  </div>
+
+  <!-- SMART NOTIFICATIONS -->
+  <div class="data-section" id="smart-notifs-sec">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h3 style="margin:0;">🧠 Smart Notifications <span style="font-size:12px;color:#888;font-weight:400;">(ML Classified)</span></h3>
+      <button onclick="loadSmartNotifs()" style="background:#007bff;color:#fff;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">↻ Refresh</button>
+    </div>
+    <div id="notif-count-chips" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <span style="background:#ffe0e0;color:#dc3545;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">🔴 High: <span id="cnt-high-chip">0</span></span>
+      <span style="background:#fff0e0;color:#fd7e14;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">🟠 Medium: <span id="cnt-medium-chip">0</span></span>
+      <span style="background:#e0ffe8;color:#28a745;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">🟢 Low: <span id="cnt-low-chip">0</span></span>
+    </div>
+    <div class="notif-tabs">
+      <button class="ntab tab-high"   onclick="switchNotifTab('high',this)">🔴 High   <span id="cnt-high">(0)</span></button>
+      <button class="ntab tab-medium" onclick="switchNotifTab('medium',this)">🟠 Medium <span id="cnt-medium">(0)</span></button>
+      <button class="ntab tab-low"    onclick="switchNotifTab('low',this)">🟢 Low    <span id="cnt-low">(0)</span></button>
+    </div>
+    <div class="notif-section active" id="ns-high"><p style="color:#888;font-size:13px;padding:10px;">Loading...</p></div>
+    <div class="notif-section" id="ns-medium"></div>
+    <div class="notif-section" id="ns-low"></div>
+  </div>
+
+  <!-- QUESTIONNAIRE -->
+  <div class="data-section" id="quiz-sec" style="display:none;">
+    <h3>📋 Academic Questionnaire</h3>
+    <div id="quiz-intro">
+      <div class="quiz-intro-box">
+        <h3>🧠 Student Performance Assessment</h3>
+        <p>Answer 40 questions across 4 domains. Your responses help us calculate your level and auto-assign the right mentor.</p>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <div style="background:rgba(255,255,255,.2);padding:7px 14px;border-radius:8px;font-size:13px;"><strong>40</strong> Questions</div>
+          <div style="background:rgba(255,255,255,.2);padding:7px 14px;border-radius:8px;font-size:13px;"><strong>4</strong> Domains</div>
+          <div style="background:rgba(255,255,255,.2);padding:7px 14px;border-radius:8px;font-size:13px;"><strong>~5 min</strong></div>
+        </div>
+        <button class="btn-primary" onclick="startQuiz()">Start Assessment →</button>
+      </div>
+    </div>
+    <div id="quiz-form" style="display:none;">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="quiz-progress" style="width:0%"></div></div>
+      <div id="quiz-questions"></div>
+      <button class="submit-quiz" id="quiz-submit-btn" onclick="submitQuiz()" disabled>Submit Assessment</button>
+    </div>
+    <div id="quiz-result" style="display:none;"></div>
+  </div>
+
+  <!-- MENTOR SECTION -->
+  <div class="data-section" id="mentor-sec" style="display:none;">
+    <h3>👨‍🏫 My Mentor</h3>
+    <div id="mentor-card-container">
+      <p style="color:#666;font-size:13px;">Loading mentor info...</p>
+    </div>
+  </div>
+
+  <!-- Subject Attendance % -->
+  <div class="data-section">
+    <h3>📈 Subject Attendance</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+      <select id="subSelect" style="padding:8px;border:1px solid #cfd9ea;border-radius:8px;min-width:180px;outline:none;"></select>
+      <input type="date" id="fromDate" style="padding:8px;border:1px solid #cfd9ea;border-radius:8px;outline:none;">
+      <input type="date" id="toDate"   style="padding:8px;border:1px solid #cfd9ea;border-radius:8px;outline:none;">
+      <button onclick="refreshSubjectPercent()" class="logout" style="padding:8px 16px;">Load</button>
+    </div>
+    <div id="subjectStat" style="font-weight:600;font-size:15px;">—</div>
+  </div>
+
+  <!-- Recent Attendance -->
+  <div class="data-section">
+    <h3>🗒️ Recent Attendance</h3>
+    <ul id="att-list" class="att-list"><li class="att-item in">Loading...</li></ul>
+  </div>
+</main>
+
+<!-- CALL MODAL -->
+<div class="modal-overlay" id="call-modal">
+  <div class="modal-box">
+    <div class="call-avatar">📞</div>
+    <h3 id="call-mentor-name">Mentor</h3>
+    <p>Calling your mentor...<br><small style="color:#aaa;">⚠️ UI Simulation only</small></p>
+    <div class="modal-btns">
+      <button class="btn-close" onclick="closeCallModal()">Cancel</button>
+      <button class="btn-end"   onclick="closeCallModal()">🔴 End</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="student_dashboard.js"></script>
+</body>
+</html>

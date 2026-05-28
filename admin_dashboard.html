@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — EduFy</title>
+  <link rel="stylesheet" href="admin_dashboard.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-text">EduFy</div>
+    <div class="logo-sub">Admin Panel</div>
+  </div>
+  <nav>
+    <button onclick="showPage('dashboard')" class="active" id="nav-dashboard">📊 Dashboard</button>
+    <button onclick="showPage('students')"  id="nav-students">👩‍🎓 Students</button>
+    <button onclick="showPage('teachers')"  id="nav-teachers">👨‍🏫 Teachers</button>
+    <button onclick="showPage('timetable')" id="nav-timetable">📅 Timetable</button>
+    <button onclick="showPage('attendance')"id="nav-attendance">✅ Attendance</button>
+    <button onclick="showPage('mentors')"   id="nav-mentors">🤝 Mentors</button>
+    <button onclick="showPage('notifs')"    id="nav-notifs">🔔 Notifications</button>
+    <button onclick="showPage('settings')"  id="nav-settings">⚙️ Settings</button>
+    <button onclick="doLogout()"            style="color:#fca5a5;">🚪 Logout</button>
+  </nav>
+  <div class="sidebar-footer">Admin Account<br><span id="admin-email" style="color:#60a5fa;"></span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+  <header><h1 id="page-title">📊 Admin Dashboard</h1></header>
+
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div id="page-dashboard" class="page active">
+    <div class="cards">
+      <div class="card">        <h3>Total Students</h3><div class="num" id="cnt-students">—</div></div>
+      <div class="card green">  <h3>Total Teachers</h3><div class="num" id="cnt-teachers">—</div></div>
+      <div class="card orange"> <h3>Timetable Slots</h3><div class="num" id="cnt-tt">—</div></div>
+      <div class="card red">    <h3>Notifications</h3><div class="num" id="cnt-notifs">—</div></div>
+    </div>
+
+    <div class="data-section">
+      <h3>🕐 Recent Activity</h3>
+      <div id="recent-activity" style="color:#888;font-size:13px;">Loading...</div>
+    </div>
+  </div>
+
+  <!-- ===== STUDENTS PAGE ===== -->
+  <div id="page-students" class="page">
+    <div class="data-section">
+      <h3>➕ Add New Student</h3>
+      <div class="form-row">
+        <input id="s-name"    placeholder="Full Name *" />
+        <input id="s-email"   placeholder="Email *" type="email" />
+        <input id="s-pass"    placeholder="Password *" type="password" />
+        <input id="s-section" placeholder="Section (e.g. CSE-A)" />
+      </div>
+      <button class="btn" onclick="addStudent()">Add Student</button>
+    </div>
+    <div class="data-section">
+      <h3>👩‍🎓 All Students</h3>
+      <input class="search-bar" placeholder="🔍 Search by name or email..." oninput="filterTable('students-tbody', this.value, [0,1])"/>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Section</th><th>Action</th></tr></thead>
+        <tbody id="students-tbody"><tr><td colspan="4" style="text-align:center;color:#888;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== TEACHERS PAGE ===== -->
+<div id="page-teachers" class="page">
+  <div class="data-section">
+
+<h3>➕ Add New Teacher</h3>
+
+<div class="form-row">
+
+<input
+id="t-name"
+placeholder="Full Name *"
+/>
+
+<input
+id="t-email"
+placeholder="Email *"
+type="email"
+/>
+
+<input
+id="t-pass"
+placeholder="Password *"
+type="password"
+/>
+
+<input
+id="t-section"
+placeholder="Sections (Example: 5A,5D,5F)"
+/>
+</div>
+
+<button
+class="btn"
+onclick="addTeacher()">
+
+Add Teacher
+
+</button>
+
+</div>
+
+
+
+<div class="data-section">
+
+<h3>👨‍🏫 All Teachers</h3>
+
+<input
+class="search-bar"
+placeholder="🔍 Search..."
+oninput="
+filterTable(
+'teachers-tbody',
+this.value,
+[0,1,2]
+)
+"
+/>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+<th>Email</th>
+<th>Section</th>
+<th>Coordinator</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="teachers-tbody">
+
+<tr>
+
+<td colspan="5">
+
+Loading...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+</div>
+  <!-- ===== TIMETABLE PAGE ===== -->
+  <div id="page-timetable" class="page">
+    <div class="data-section">
+      <h3>📅 Full Timetable</h3>
+      <input class="search-bar" placeholder="🔍 Filter by subject, teacher, group..." oninput="filterTable('tt-tbody', this.value, [0,1,2,3,4])"/>
+      <table>
+        <thead><tr><th>Day</th><th>Subject</th><th>Teacher</th><th>Class Group</th><th>Time</th><th>Room</th><th>Action</th></tr></thead>
+        <tbody id="tt-tbody"><tr><td colspan="7" style="text-align:center;color:#888;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== ATTENDANCE PAGE ===== -->
+  <div id="page-attendance" class="page">
+    <div class="data-section">
+      <h3>✅ Attendance Records</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <input id="att-filter-section" placeholder="Section (e.g. CSE-A)" style="padding:8px 12px;border:1px solid #cfd9ea;border-radius:8px;font-size:13px;outline:none;">
+        <input type="date" id="att-filter-date" style="padding:8px 12px;border:1px solid #cfd9ea;border-radius:8px;font-size:13px;outline:none;">
+        <button class="btn" onclick="loadAttendance()">Filter</button>
+        <button class="btn btn-green" onclick="exportAttendance()">Export CSV</button>
+      </div>
+      <table>
+        <thead><tr><th>Student</th><th>Subject</th><th>Class Group</th><th>Status</th><th>Time</th></tr></thead>
+        <tbody id="att-tbody"><tr><td colspan="5" style="text-align:center;color:#888;">Select a filter above</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== MENTORS PAGE ===== -->
+  <div id="page-mentors" class="page">
+    <div class="data-section">
+      <h3>🤝 Mentor Assignments</h3>
+      <table>
+        <thead><tr><th>Mentor Name</th><th>Subject</th><th>Students Assigned</th><th>Max Capacity</th><th>Action</th></tr></thead>
+        <tbody id="mentors-tbody"><tr><td colspan="5" style="text-align:center;color:#888;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="data-section" id="mentor-students-sec" style="display:none;">
+      <h3>👥 Students under: <span id="mentor-name-title" style="color:#007bff;"></span></h3>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Score</th><th>Level</th></tr></thead>
+        <tbody id="mentor-students-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== NOTIFICATIONS PAGE ===== -->
+  <div id="page-notifs" class="page">
+    <div class="data-section">
+      <h3>🔔 Smart Notification History</h3>
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchAdminNotifTab('All', this)">All</button>
+        <button class="tab-btn" onclick="switchAdminNotifTab('High', this)">🔴 High</button>
+        <button class="tab-btn" onclick="switchAdminNotifTab('Medium', this)">🟠 Medium</button>
+        <button class="tab-btn" onclick="switchAdminNotifTab('Low', this)">🟢 Low</button>
+      </div>
+      <div id="admin-notif-list"><p style="color:#888;font-size:13px;">Loading...</p></div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS PAGE ===== -->
+  <div id="page-settings" class="page">
+    <div class="data-section">
+      <h3>⚙️ System Settings</h3>
+      <p style="color:#555;font-size:14px;margin-bottom:16px;">Manage system-wide configurations.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;max-width:400px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:5px;">System Name</label>
+          <input value="EduFy College Management" style="width:100%;padding:9px;border:1px solid #cfd9ea;border-radius:8px;font-size:13px;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:5px;">Admin Email</label>
+          <input id="settings-email" style="width:100%;padding:9px;border:1px solid #cfd9ea;border-radius:8px;font-size:13px;outline:none;">
+        </div>
+        <button class="btn" onclick="showToast('Settings saved!','success')">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main-content -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'http://localhost:5002/api';
+  let allNotifications = { high:[], medium:[], low:[] };
+
+  // ===== PAGE NAVIGATION =====
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar button[id^="nav-"]').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const nb = document.getElementById('nav-' + name);
+    if (nb) nb.classList.add('active');
+    const titles = { dashboard:'📊 Admin Dashboard', students:'👩‍🎓 Manage Students', teachers:'👨‍🏫 Manage Teachers', timetable:'📅 Timetable', attendance:'✅ Attendance Records', mentors:'🤝 Mentor System', notifs:'🔔 Notifications', settings:'⚙️ Settings' };
+    document.getElementById('page-title').textContent = titles[name] || 'Admin Dashboard';
+    if (name === 'students')   loadStudents();
+    if (name === 'teachers')   loadTeachers();
+    if (name === 'timetable')  loadTimetable();
+    if (name === 'attendance') loadAttendance();
+    if (name === 'mentors')    loadAdminMentors();
+    if (name === 'notifs')     loadAdminNotifs();
+  }
+
+  // ===== DASHBOARD =====
+  async function loadDashboard() {
+    try {
+      const [stuRes, tchRes, ttRes, notifRes] = await Promise.all([
+        fetch(`${API}/students`),
+        fetch(`${API}/teachers`),
+        fetch(`${API}/timetable`),
+        fetch(`${API}/smart-notifications/all-grouped`)
+      ]);
+      const students = await stuRes.json().catch(()=>[]);
+      const teachers = await tchRes.json().catch(()=>[]);
+      const tt       = await ttRes.json().catch(()=>[]);
+      const notifs   = await notifRes.json().catch(()=>({}));
+
+      document.getElementById('cnt-students').textContent = Array.isArray(students) ? students.length : '—';
+      document.getElementById('cnt-teachers').textContent = Array.isArray(teachers) ? teachers.length : '—';
+      document.getElementById('cnt-tt').textContent       = Array.isArray(tt)       ? tt.length       : '—';
+      document.getElementById('cnt-notifs').textContent   = notifs.counts?.total    || '—';
+
+      document.getElementById('recent-activity').innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+          <div style="background:#f8faff;padding:14px;border-radius:8px;border-left:4px solid #007bff;">
+            <div style="font-size:12px;color:#888;">Students</div>
+            <div style="font-size:20px;font-weight:700;color:#007bff;">${Array.isArray(students)?students.length:0}</div>
+          </div>
+          <div style="background:#f5fff8;padding:14px;border-radius:8px;border-left:4px solid #28a745;">
+            <div style="font-size:12px;color:#888;">Teachers</div>
+            <div style="font-size:20px;font-weight:700;color:#28a745;">${Array.isArray(teachers)?teachers.length:0}</div>
+          </div>
+          <div style="background:#fff8f0;padding:14px;border-radius:8px;border-left:4px solid #fd7e14;">
+            <div style="font-size:12px;color:#888;">High-Priority Notifications</div>
+            <div style="font-size:20px;font-weight:700;color:#fd7e14;">${notifs.counts?.high||0}</div>
+          </div>
+        </div>`;
+    } catch(e) {
+      document.getElementById('recent-activity').innerHTML = '<p style="color:#dc3545;">Failed to load dashboard data.</p>';
+    }
+  }
+
+  // ===== STUDENTS =====
+  async function loadStudents() {
+    const tbody = document.getElementById('students-tbody');
+    try {
+      const res = await fetch(`${API}/students`);
+      const data = await res.json();
+      if (!data.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">No students found</td></tr>'; return; }
+      tbody.innerHTML = data.map(s => `
+        <tr>
+          <td>${s.fullName||s.name||'—'}</td>
+          <td>${s.email}</td>
+          <td>${s.section||'—'}</td>
+          <td><button class="btn btn-red btn-sm" onclick="deleteStudent('${s._id}')">Delete</button></td>
+        </tr>`).join('');
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="4" style="color:#dc3545;text-align:center;">Failed to load</td></tr>'; }
+  }
+
+  async function addStudent() {
+    const name = document.getElementById('s-name').value.trim();
+    const email= document.getElementById('s-email').value.trim();
+    const pass = document.getElementById('s-pass').value.trim();
+    const sec  = document.getElementById('s-section').value.trim();
+    if (!name||!email||!pass) { showToast('Name, Email and Password required!','error'); return; }
+    try {
+      const res  = await fetch(`${API}/register`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ fullName:name, email, password:pass, section:sec })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(`✅ Student ${name} added!`, 'success');
+        ['s-name','s-email','s-pass','s-section'].forEach(id => document.getElementById(id).value='');
+        loadStudents();
+      } else throw new Error(data.message||'Failed');
+    } catch(e) { showToast('Error: '+e.message, 'error'); }
+  }
+
+  async function deleteStudent(id) {
+    if (!confirm('Delete this student?')) return;
+    try {
+      await fetch(`${API}/students/${id}`, { method:'DELETE' });
+      showToast('Student deleted', 'success');
+      loadStudents();
+    } catch(e) { showToast('Failed to delete','error'); }
+  }
+
+  // ===== TEACHERS =====
+ // ===== TEACHERS =====
+async function loadTeachers() {
+
+const tbody =
+document.getElementById(
+'teachers-tbody'
+);
+
+try {
+
+const res =
+await fetch(
+`${API}/teachers`
+);
+
+const data =
+await res.json();
+
+if (!data.length) {
+
+tbody.innerHTML = `
+<tr>
+<td colspan="5"
+style="
+text-align:center;
+color:#888;
+">
+No teachers found
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+tbody.innerHTML =
+data.map(t => `
+
+<tr>
+
+<td>${t.name || '—'}</td>
+
+<td>${t.email || '—'}</td>
+<td>
+
+<input
+
+type="text"
+
+value="${t.section || ''}"
+
+placeholder="5A,5D,5F"
+
+onchange="
+assignSection(
+'${t._id}',
+this.value
+)
+"
+
+/>
+
+</td>
+
+<td>
+
+<input
+
+type="text"
+
+placeholder="Coordinator Section"
+
+value="${
+t.coordinatorSection || ''
+}"
+
+style="
+width:150px;
+"
+
+onchange="
+makeCoordinator(
+'${t._id}',
+this.value
+)
+"
+
+/>
+
+${
+t.isCoordinator
+
+?
+
+`<div
+style="
+color:#28a745;
+font-size:12px;
+font-weight:700;
+margin-top:4px;
+">
+Coordinator of ${
+t.coordinatorSection || ''
+}
+</div>`
+
+:
+
+''
+}
+
+</td>
+
+<td>
+
+<button
+class="btn btn-red btn-sm"
+
+onclick="
+deleteTeacher(
+'${t._id}'
+)
+">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`).join('');
+
+}
+catch(e){
+
+console.log(e);
+
+tbody.innerHTML = `
+<tr>
+<td colspan="5"
+style="
+text-align:center;
+color:red;
+">
+Failed
+</td>
+</tr>
+`;
+
+}
+
+}
+
+async function addTeacher(){
+
+const name=
+document.getElementById(
+'t-name'
+).value.trim();
+
+const email=
+document.getElementById(
+'t-email'
+).value.trim();
+
+const pass=
+document.getElementById(
+'t-pass'
+).value.trim();
+
+const section=
+document.getElementById(
+'t-section'
+).value;
+
+if(
+!name||
+!email||
+!pass
+){
+
+showToast(
+'All fields required!',
+'error'
+);
+
+return;
+
+}
+
+try{
+
+const res=
+
+await fetch(
+
+`${API}/teacher/register`,
+
+{
+
+method:'POST',
+
+headers:{
+'Content-Type':
+'application/json'
+},
+
+body:JSON.stringify({
+
+name,
+email,
+
+password:pass,
+
+section,
+
+isCoordinator:false
+
+})
+
+}
+
+);
+
+const data=
+await res.json();
+
+if(res.ok){
+
+showToast(
+`✅ ${name} Added`,
+'success'
+);
+
+[
+'t-name',
+'t-email',
+'t-pass'
+]
+
+.forEach(id=>
+
+document.getElementById(
+id
+).value=''
+
+);
+
+document.getElementById(
+'t-section'
+).value="";
+
+loadTeachers();
+
+}
+
+else{
+
+throw new Error(
+
+data.message||
+
+'failed'
+
+)
+
+}
+
+}catch(e){
+
+showToast(
+
+e.message,
+
+'error'
+
+)
+
+}
+
+}
+
+
+
+async function assignSection(
+
+id,
+section
+
+){
+
+try{
+
+await fetch(
+
+`${API}/teacher/assign-section`,
+
+{
+
+method:'POST',
+
+headers:{
+
+'Content-Type':
+'application/json'
+
+},
+
+body:JSON.stringify({
+
+teacherId:id,
+
+section
+
+})
+
+}
+
+);
+
+showToast(
+'Section Updated',
+'success'
+);
+
+loadTeachers();
+
+}catch{
+
+showToast(
+'Failed',
+'error'
+);
+
+}
+
+}
+
+
+async function makeCoordinator(
+
+id,
+section
+
+){
+
+if(!section){
+
+showToast(
+'Enter section',
+'error'
+);
+
+return;
+
+}
+
+try{
+
+const res =
+await fetch(
+`${API}/teachers`
+);
+
+const teachers =
+await res.json();
+
+const existing =
+teachers.find(t =>
+
+t.coordinatorSection === section &&
+t._id !== id
+
+);
+
+
+if(existing){
+
+const ok = confirm(
+
+`${existing.name} is already coordinator of ${section}.
+
+Replace coordinator?`
+
+);
+
+if(!ok){
+return;
+}
+
+}
+
+
+await fetch(
+
+`${API}/teacher/make-coordinator`,
+
+{
+
+method:'POST',
+
+headers:{
+'Content-Type':
+'application/json'
+},
+
+body:JSON.stringify({
+
+teacherId:id,
+section
+
+})
+
+}
+
+);
+
+showToast(
+'Coordinator updated',
+'success'
+);
+
+loadTeachers();
+
+}
+catch(err){
+
+console.log(err);
+
+showToast(
+'Failed',
+'error'
+);
+
+}
+
+}
+// ===== TIMETABLE =====
+  async function loadTimetable() {
+    const tbody = document.getElementById('tt-tbody');
+    try {
+      const res  = await fetch(`${API}/timetable`);
+      const data = await res.json();
+      if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;">No timetable entries</td></tr>'; return; }
+      tbody.innerHTML = data.map(c => `
+        <tr>
+          <td>${c.day}</td>
+          <td>${c.subject}</td>
+          <td>${c.teacher||'—'}</td>
+          <td>${c.classGroup||'—'}</td>
+          <td>${c.startTime} – ${c.endTime}</td>
+          <td>${c.roomno||'—'}</td>
+          <td><button class="btn btn-red btn-sm" onclick="deleteTTEntry('${c._id}')">Delete</button></td>
+        </tr>`).join('');
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="color:#dc3545;text-align:center;">Failed to load</td></tr>'; }
+  }
+
+  async function deleteTTEntry(id) {
+    if (!confirm('Remove this timetable entry?')) return;
+    try {
+      await fetch(`${API}/timetable/${id}`, { method:'DELETE' });
+      showToast('Entry removed', 'success'); loadTimetable();
+    } catch(e) { showToast('Failed','error'); }
+  }
+
+  // ===== ATTENDANCE =====
+  async function loadAttendance() {
+    const tbody   = document.getElementById('att-tbody');
+    const section = document.getElementById('att-filter-section').value.trim();
+    const date    = document.getElementById('att-filter-date').value;
+    const params  = new URLSearchParams();
+    if (section) params.append('section', section);
+    if (date)    params.append('date', date);
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;">Loading...</td></tr>';
+    try {
+      const res  = await fetch(`${API}/attendance/all?${params}`);
+      const data = await res.json();
+      const rows = data.rows || data || [];
+      if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;">No records found</td></tr>'; return; }
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.studentName || r.studentEmail || '—'}</td>
+          <td>${r.subject||'—'}</td>
+          <td>${r.classGroup||'—'}</td>
+          <td><span class="chip chip-${r.status}">${(r.status||'—').toUpperCase()}</span></td>
+          <td>${r.markedAt ? new Date(r.markedAt).toLocaleString() : '—'}</td>
+        </tr>`).join('');
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="color:#dc3545;text-align:center;">Failed to load</td></tr>'; }
+  }
+
+  function exportAttendance() {
+    const rows = [...document.querySelectorAll('#att-tbody tr')];
+    const csv  = rows.map(r => [...r.cells].map(c => `"${c.textContent.trim()}"`).join(',')).join('\n');
+    const blob = new Blob(['Student,Subject,ClassGroup,Status,Time\n' + csv], {type:'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'attendance.csv'; a.click();
+  }
+
+  // ===== MENTORS =====
+  async function loadAdminMentors() {
+    const tbody = document.getElementById('mentors-tbody');
+    try {
+      const res  = await fetch(`${API}/mentor-system/mentors`);
+      const data = await res.json();
+      if (!data.success || !data.mentors.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;">No mentors yet</td></tr>'; return;
+      }
+      tbody.innerHTML = data.mentors.map(m => `
+        <tr>
+          <td>${m.name}</td>
+          <td>${m.subject||'—'}</td>
+          <td>${m.assignedStudents?.length||0}</td>
+          <td>${m.maxStudents}</td>
+          <td><button class="btn btn-sm" onclick="loadMentorStudentsAdmin('${m._id}','${m.name}')">View Students</button></td>
+        </tr>`).join('');
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="5" style="color:#dc3545;text-align:center;">Failed</td></tr>'; }
+  }
+
+  async function loadMentorStudentsAdmin(id, name) {
+    document.getElementById('mentor-students-sec').style.display = 'block';
+    document.getElementById('mentor-name-title').textContent = name;
+    const tbody = document.getElementById('mentor-students-tbody');
+    tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+    try {
+      const res  = await fetch(`${API}/mentor-system/mentor/${id}/students`);
+      const data = await res.json();
+      const lc   = { Low:'chip-low', Medium:'chip-medium', High:'chip-high' };
+      tbody.innerHTML = data.students.length
+        ? data.students.map(s => `<tr><td>${s.studentName}</td><td>${s.studentEmail}</td><td>${s.totalScore??'—'}</td><td><span class="chip ${lc[s.level]||''}">${s.level||'N/A'}</span></td></tr>`).join('')
+        : '<tr><td colspan="4" style="text-align:center;color:#888;">No students</td></tr>';
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="4" style="color:#dc3545;">Failed</td></tr>'; }
+  }
+
+  // ===== NOTIFICATIONS =====
+  async function loadAdminNotifs() {
+    try {
+      const res  = await fetch(`${API}/smart-notifications/all-grouped`);
+      const data = await res.json();
+      allNotifications = data.notifications || { high:[], medium:[], low:[] };
+      renderAdminNotifList('All');
+    } catch(e) {
+      document.getElementById('admin-notif-list').innerHTML = '<p style="color:#dc3545;font-size:13px;">Failed to load</p>';
+    }
+  }
+
+  function renderAdminNotifList(filter) {
+    let list = [];
+    if (filter === 'All') list = [...allNotifications.high,...allNotifications.medium,...allNotifications.low].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    else list = allNotifications[filter.toLowerCase()] || [];
+    const el = document.getElementById('admin-notif-list');
+    if (!list.length) { el.innerHTML='<p style="color:#888;font-size:13px;">No notifications</p>'; return; }
+    el.innerHTML = list.map(n => `
+      <div class="ni-item ni-${n.priority}">
+        <strong>${n.message}</strong>
+        <div class="ni-meta">📤 ${n.sentBy||'System'} &nbsp;·&nbsp; 🕐 ${timeAgo(n.createdAt)} &nbsp;·&nbsp; <strong>${n.priority}</strong></div>
+      </div>`).join('');
+  }
+
+  function switchAdminNotifTab(filter, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderAdminNotifList(filter);
+  }
+
+  // ===== UTILS =====
+  function filterTable(tbodyId, query, cols) {
+    const q = query.toLowerCase();
+    document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+      const text = cols.map(i => tr.cells[i]?.textContent || '').join(' ').toLowerCase();
+      tr.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
+
+  function timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr);
+    const mins = Math.floor(diff/60000);
+    if (mins<1) return 'just now';
+    if (mins<60) return `${mins}m ago`;
+    const hrs = Math.floor(mins/60);
+    if (hrs<24) return `${hrs}h ago`;
+    return `${Math.floor(hrs/24)}d ago`;
+  }
+
+  function showToast(msg, type='') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function doLogout() {
+    localStorage.clear(); window.location.href = 'login.html';
+  }
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const email = localStorage.getItem('userEmail') || localStorage.getItem('adminEmail') || '';
+    if (email) {
+      document.getElementById('admin-email').textContent = email;
+      document.getElementById('settings-email').value   = email;
+    }
+    loadDashboard();
+  });
+</script>
+</body>
+</html>

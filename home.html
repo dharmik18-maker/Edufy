@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduFy — College Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo-text">Edu<span>Fy</span></div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-btns">
+      <button class="btn-login" onclick="window.location.href='login.html'">Login</button>
+      <button class="btn-register" onclick="window.location.href='login.html'">Register</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h2>Stay Updated. Stay Organized.</h2>
+    <p>Real-time notifications, smart mentor assignment, and intelligent class management for students, teachers, and
+      admins. Never miss a class update again!</p>
+    <div class="hero-btns">
+      <button class="btn-hero-main" onclick="window.location.href='login.html'">🚀 Get Started</button>
+      <button class="btn-hero-outline"
+        onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">✨ See Features</button>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="s-num">500+</div>
+      <div class="s-label">Students</div>
+    </div>
+    <div class="stat-item">
+      <div class="s-num">50+</div>
+      <div class="s-label">Teachers</div>
+    </div>
+    <div class="stat-item">
+      <div class="s-num">99%</div>
+      <div class="s-label">Uptime</div>
+    </div>
+    <div class="stat-item">
+      <div class="s-num">10+</div>
+      <div class="s-label">Features</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features" class="features">
+    <h2>Key Features</h2>
+    <p class="subtitle">Everything you need to manage your college — in one place</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon">📅</div>
+        <h3>Timetable CRUD</h3>
+        <p>Create, update, and delete class schedules seamlessly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🗓</div>
+        <h3>Class Scheduling</h3>
+        <p>Plan and update classes dynamically with real-time sync.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">⏰</div>
+        <h3>Automatic Reminders</h3>
+        <p>Students get notified 5 minutes before every class.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔔</div>
+        <h3>Smart Notifications</h3>
+        <p>AI-classified alerts: High, Medium, and Low priority.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">⚡</div>
+        <h3>Real-Time Updates</h3>
+        <p>Socket.io powered instant notifications for all users.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📋</div>
+        <h3>Attendance Tracking</h3>
+        <p>Track and manage attendance digitally with reports.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🧠</div>
+        <h3>ML Mentor Assignment</h3>
+        <p>40-question assessment auto-assigns the right mentor.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🤖</div>
+        <h3>AI Mentor Bot</h3>
+        <p>24/7 AI-powered academic doubt solving for students.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">👤</div>
+        <h3>Role-Based Login</h3>
+        <p>Separate dashboards for Admin, Teacher, and Student.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📢</div>
+        <h3>Announcements</h3>
+        <p>Teachers broadcast important messages instantly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="how">
+    <h2>How It Works</h2>
+    <p class="subtitle">Simple, fast, and powerful</p>
+    <div class="steps">
+      <div class="step"><span class="step-number">1</span>Admin sets up the timetable and registers students & teachers.
+      </div>
+      <div class="step"><span class="step-number">2</span>Students complete the 40-question assessment to get a mentor.
+      </div>
+      <div class="step"><span class="step-number">3</span>Teachers create announcements and manage attendance.</div>
+      <div class="step"><span class="step-number">4</span>System auto-classifies notifications as High / Medium / Low.
+      </div>
+      <div class="step"><span class="step-number">5</span>Students receive real-time notifications before every class.
+      </div>
+      <div class="step"><span class="step-number">6</span>Admin monitors everything through the analytics dashboard.
+      </div>
+      <div class="step"><span class="step-number">7</span>Check the stress level and forward to the respective mentor.
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <h2>About EduFy</h2>
+    <p>EduFy is a full-featured College Management System built with Node.js, Express, MongoDB, and Socket.io. It
+      bridges the gap between students, teachers, and administrators through real-time communication, AI-powered mentor
+      assignment, and smart notification filtering — making sure no student ever falls behind and no class update is
+      ever missed.</p>
+  </section>
+
+  <!-- CTA / CONTACT -->
+  <section id="contact" class="cta">
+    <h3>Join EduFy Today!</h3>
+    <p>Use EduFy to never miss a class, get the right mentor, and stay ahead.</p>
+    <button class="btn-hero-main" onclick="window.location.href='Firstpage.html'">Create Account →</button>
+    <div class="social-links">
+      <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="mailto:contact@edufy.com" title="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2025 EduFy College Management System. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card, .step, .about, .cta').forEach(el => observer.observe(el));
+
+if ("scrollRestoration" in history) {
+
+history.scrollRestoration = "manual";
+
+
+}
+
+
+
+window.addEventListener("DOMContentLoaded", () => {
+
+window.scrollTo(0, 0);
+
+});
+  </script>
+</body>
+
+</html>

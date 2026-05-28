@@ -1,0 +1,265 @@
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", Arial, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa, #2563eb);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .home-btn {
+        position: absolute;
+        top: 22px;
+        left: 22px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 10px 12px;
+        border-radius: 12px;
+        backdrop-filter: blur(4px);
+        transition: 0.3s;
+        z-index: 20;
+        text-decoration: none;
+      }
+
+      .home-btn:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      .bg-item {
+        position: absolute;
+        opacity: 0.18;
+        width: 130px;
+        filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.3));
+      }
+
+      .bag {
+        top: -20px;
+        left: -20px;
+        transform: rotate(-15deg);
+      }
+
+      .pen {
+        bottom: 10px;
+        right: 50px;
+        width: 110px;
+        transform: rotate(25deg);
+      }
+
+      .book {
+        top: 120px;
+        right: -20px;
+        width: 150px;
+        transform: rotate(10deg);
+      }
+
+      .login-box {
+        width: 420px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 38px 32px;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        animation: fadeIn 0.5s ease;
+        position: relative;
+        z-index: 10;
+      }
+
+      .title {
+        text-align: center;
+        color: #0ea5e9;
+        font-size: 26px;
+        margin-bottom: 4px;
+        font-weight: 700;
+      }
+
+      .quote {
+        text-align: center;
+        font-size: 13px;
+        color: #475569;
+        margin-bottom: 22px;
+      }
+
+      .input-box {
+        margin-bottom: 18px;
+      }
+
+      .input-box label {
+        font-size: 13px;
+        color: #334155;
+        font-weight: 600;
+      }
+
+      .input-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f1f5f9;
+        padding: 11px 12px;
+        border-radius: 10px;
+        margin-top: 6px;
+        border: 1px solid #cbd5e1;
+        transition: border-color 0.2s;
+      }
+
+      .input-field:focus-within {
+        border-color: #0ea5e9;
+      }
+
+      .input-field input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .role-selector {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+
+      .role-btn {
+        flex: 1;
+        min-width: 70px;
+        padding: 8px 6px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+        cursor: pointer;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        transition: all 0.2s;
+      }
+
+      .role-btn.selected {
+        border-color: #0ea5e9;
+        background: #e0f2fe;
+        color: #0ea5e9;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 13px;
+        background: #0ea5e9;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: 0.25s;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      .btn:hover {
+        background: #0284c7;
+        transform: translateY(-1px);
+      }
+
+      .divider {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 13px;
+        margin: 16px 0;
+      }
+
+      .register-link {
+        text-align: center;
+        font-size: 13px;
+        color: #475569;
+        margin-top: 14px;
+      }
+
+      .register-link a {
+        color: #0ea5e9;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .register-link a:hover {
+        text-decoration: underline;
+      }
+
+      .error-msg {
+        color: #dc2626;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 13px;
+        display: none;
+      }
+
+      .success-msg {
+        color: #16a34a;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 13px;
+        display: none;
+      }
+
+      /* ── Teacher info card shown after login ── */
+      .teacher-info-card {
+        display: none;
+        margin-top: 14px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #166534;
+      }
+      .teacher-info-card .ti-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .teacher-info-card .ti-row:last-child {
+        margin-bottom: 0;
+      }
+      .teacher-info-card .ti-label {
+        font-weight: 700;
+        min-width: 80px;
+        color: #15803d;
+      }
+      .teacher-info-card .ti-badge {
+        background: #dcfce7;
+        border: 1px solid #86efac;
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .teacher-info-card .ti-coordinator {
+        background: #fef9c3;
+        border: 1px solid #fde047;
+        color: #854d0e;
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-weight: 700;
+        font-size: 12px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+  

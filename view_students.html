@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>View Students — EduFy</title>
+
+<link rel="stylesheet"
+href="view_students.css">
+
+</head>
+
+<body>
+
+<header class="header">
+<h1>EduFy — Student Management</h1>
+
+<button class="logout"
+onclick="window.location.href='login.html'">
+
+Logout
+
+</button>
+</header>
+
+
+<aside class="sidebar">
+
+<a href="teacher_dashboard.html">
+🏠 Home
+</a>
+
+<a href="announcement.html">
+📢 Announcements
+</a>
+
+<a href="view_students.html"
+class="active">
+
+👥 View Students
+
+</a>
+
+</aside>
+
+
+
+<main class="content">
+
+<button class="back-btn"
+onclick="window.location.href='teacher_dashboard.html'">
+
+← Back to Dashboard
+
+</button>
+
+
+<h2>
+👩‍🎓 Student List
+</h2>
+
+
+
+<div class="mini-stats">
+
+<div class="mini-card">
+
+<div class="mv"
+id="stat-total">
+
+—
+
+</div>
+
+<div class="ml">
+Total
+</div>
+
+</div>
+
+
+
+<div class="mini-card red">
+
+<div class="mv"
+id="stat-low">
+
+—
+
+</div>
+
+<div class="ml">
+Need Support
+</div>
+
+</div>
+
+
+
+<div class="mini-card orange">
+
+<div class="mv"
+id="stat-med">
+
+—
+
+</div>
+
+<div class="ml">
+Medium
+</div>
+
+</div>
+
+
+
+<div class="mini-card green">
+
+<div class="mv"
+id="stat-hi">
+
+—
+
+</div>
+
+<div class="ml">
+Doing Well
+</div>
+
+</div>
+
+</div>
+
+
+
+
+<div class="toolbar">
+
+<select
+id="sectionSelect"
+class="filter-select"
+onchange="filterBySection(this.value)">
+
+<option value="">
+All Assigned Sections
+</option>
+
+</select>
+
+
+<input
+class="search-input"
+placeholder="🔍 Search student..."
+oninput="filterStudents(this.value)"
+>
+
+
+
+<select
+class="filter-select"
+onchange="filterByLevel(this.value)">
+
+<option value="">
+All Levels
+</option>
+
+<option value="Low">
+Low
+</option>
+
+<option value="Medium">
+Medium
+</option>
+
+<option value="High">
+High
+</option>
+
+<option value="none">
+No Assessment
+</option>
+
+</select>
+
+</div>
+
+
+
+
+<table id="students-table">
+
+<thead>
+
+<tr>
+
+<th>#</th>
+
+<th>Name</th>
+
+<th>Email</th>
+
+<th>Section</th>
+
+<th>Score</th>
+
+<th>Level</th>
+
+<th>Mentor</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="students-tbody">
+
+<tr class="empty-row">
+
+<td colspan="7">
+
+Loading students...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</main>
+
+
+
+
+<script>
+
+const API='http://localhost:5002/api';
+
+let allStudents=[];
+let allProfiles={};
+
+let teacherSections=[];
+
+let currentFilter='';
+let currentSearch='';
+let currentSection='';
+
+
+
+async function loadStudents(){
+
+try{
+
+const token=
+localStorage.getItem("token");
+
+
+if(!token){
+
+alert(
+"Please login again"
+);
+
+location.href='login.html';
+
+return;
+
+}
+
+
+
+
+const teacherRes=
+await fetch(
+`${API}/teacher/my-sections`,
+{
+headers:{
+Authorization:
+`Bearer ${token}`
+}
+}
+);
+
+
+const teacherData=
+await teacherRes.json();
+
+teacherSections=
+teacherData.sections || [];
+
+
+
+
+const dropdown=
+document.getElementById(
+"sectionSelect"
+);
+
+
+teacherSections.forEach(sec=>{
+
+dropdown.innerHTML+=
+`
+<option value="${sec}">
+${sec}
+</option>
+`;
+
+});
+
+
+
+
+const stuRes=
+await fetch(
+`${API}/teacher/students`,
+{
+headers:{
+Authorization:
+`Bearer ${token}`
+}
+}
+);
+
+
+allStudents=
+await stuRes.json();
+
+
+
+document.getElementById(
+'stat-total'
+).textContent=
+allStudents.length;
+
+
+
+
+
+const profileFetches=
+allStudents.map(
+
+s=>
+
+fetch(
+`${API}/mentor-system/student-profile/${s.email}`
+)
+
+.then(
+r=>r.json()
+)
+
+.catch(
+()=>null
+)
+
+);
+
+
+
+
+const profiles=
+await Promise.all(
+profileFetches
+);
+
+
+
+profiles.forEach(
+
+(p,i)=>{
+
+if(p?.success){
+
+allProfiles[
+allStudents[i].email
+]
+=
+p.profile;
+
+}
+
+}
+
+);
+
+
+
+
+const low=
+Object.values(
+allProfiles
+)
+
+.filter(
+p=>p.level==='Low'
+)
+
+.length;
+
+
+
+const med=
+Object.values(
+allProfiles
+)
+
+.filter(
+p=>p.level==='Medium'
+)
+
+.length;
+
+
+
+const hi=
+Object.values(
+allProfiles
+)
+
+.filter(
+p=>p.level==='High'
+)
+
+.length;
+
+
+
+
+document.getElementById(
+'stat-low'
+).textContent=low;
+
+document.getElementById(
+'stat-med'
+).textContent=med;
+
+document.getElementById(
+'stat-hi'
+).textContent=hi;
+
+
+
+renderStudents(
+allStudents
+);
+
+}
+catch(e){
+
+console.log(e);
+
+document
+.getElementById(
+'students-tbody'
+)
+
+.innerHTML=
+
+`
+<tr class="empty-row">
+
+<td colspan="7"
+style="color:red;">
+
+Failed to load students
+
+</td>
+
+</tr>
+`;
+
+}
+
+}
+
+
+
+
+function renderStudents(students){
+
+const tbody=
+document.getElementById(
+'students-tbody'
+);
+
+
+if(!students.length){
+
+tbody.innerHTML=
+`
+<tr class="empty-row">
+
+<td colspan="7">
+
+No Students Found
+
+</td>
+
+</tr>
+`;
+
+return;
+
+}
+
+
+
+const cls={
+
+Low:'chip-low',
+
+Medium:'chip-medium',
+
+High:'chip-high'
+
+};
+
+
+
+tbody.innerHTML=
+
+students.map(
+
+(s,i)=>{
+
+const prof=
+allProfiles[s.email];
+
+const level=
+prof?.level || '';
+
+const score=
+prof?.totalScore ?? '';
+
+const mentor=
+prof?.assignedMentor
+?.name || '—';
+
+
+
+return `
+
+<tr>
+
+<td>
+${i+1}
+</td>
+
+<td>
+
+<strong>
+
+${s.fullName ||
+s.name ||
+'—'}
+
+</strong>
+
+</td>
+
+
+<td>
+${s.email}
+</td>
+
+<td>
+${s.section || '—'}
+</td>
+
+<td>
+
+${
+score!==''
+?
+score+'/100'
+:
+'—'
+}
+
+</td>
+
+
+<td>
+
+${
+level
+
+?
+
+`<span class=
+"chip ${cls[level]}">
+
+${level}
+
+</span>`
+
+:
+
+`<span class=
+"chip chip-none">
+
+N/A
+
+</span>`
+
+}
+
+</td>
+
+
+<td>
+
+${mentor}
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+).join('');
+
+}
+
+
+
+
+function filterStudents(q){
+
+currentSearch=
+q.toLowerCase();
+
+applyFilters();
+
+}
+
+
+
+function filterByLevel(level){
+
+currentFilter=
+level;
+
+applyFilters();
+
+}
+
+
+
+function filterBySection(section){
+
+currentSection=
+section;
+
+applyFilters();
+
+}
+
+
+
+function applyFilters(){
+
+let filtered=
+allStudents.filter(
+
+s=>{
+
+const text=
+
+`
+${s.fullName||''}
+${s.email||''}
+${s.section||''}
+`
+
+.toLowerCase();
+
+
+
+const matchSearch=
+
+!currentSearch ||
+
+text.includes(
+currentSearch
+);
+
+
+
+const prof=
+allProfiles[s.email];
+
+
+
+const level=
+prof?.level
+||
+'none';
+
+
+
+const matchLevel=
+
+!currentFilter
+
+||
+
+level===currentFilter;
+
+
+
+const matchSection=
+
+!currentSection
+
+||
+
+s.section===
+currentSection;
+
+
+
+return(
+
+matchSearch &&
+
+matchLevel &&
+
+matchSection
+
+);
+
+}
+
+);
+
+
+renderStudents(
+filtered
+);
+
+}
+
+
+
+loadStudents();
+
+</script>
+
+</body>
+
+</html>

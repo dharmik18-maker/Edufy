@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Announcements — EduFy</title>
+<link rel="stylesheet" href="announcement.css">
+</head>
+
+<body>
+
+  <header class="header">
+    <h1>EduFy — Announcements</h1>
+    <button class="logout" onclick="window.location.href='login.html'">Logout</button>
+  </header>
+
+  <aside class="sidebar">
+    <a href="teacher_dashboard.html">🏠 Home</a>
+    <a href="announcement.html" class="active">📢 Announcements</a>
+   
+  </aside>
+
+  <main class="content">
+    <h2>📢 Create Announcement</h2>
+
+    <div class="card-box">
+      <h3>✍️ Text Announcement</h3>
+
+      <label>Message</label>
+      <textarea id="ann-message" placeholder="e.g. Exam tomorrow at 9am in Hall B. Attendance mandatory."
+        oninput="analyzeLive(this.value)"></textarea>
+
+      <div class="live-analysis" id="live-analysis">
+        <div class="la-title">🧠 ML Analysis (live)</div>
+        <div id="live-result"></div>
+      </div>
+
+      <label>Target Audience</label>
+      <select id="ann-target">
+        
+        <option value="student">Students Only</option>
+       
+      </select>
+
+      <button class="btn" onclick="postTextAnnouncement()">📤 Post Announcement</button>
+      <p class="msg ok" id="ann-ok"></p>
+      <p class="msg err" id="ann-err"></p>
+    </div>
+
+    <div class="card-box">
+      <h3>🖼️ Upload Poster / Image Announcement</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:14px;">Upload a poster image — our ML system will read the
+        text/caption and auto-classify the priority.</p>
+
+      <label>Poster Caption (ML will analyze this)</label>
+      <textarea id="poster-caption" placeholder="e.g. Seminar on AI tomorrow. All students must attend." rows="3"
+        oninput="analyzeLive(this.value, 'poster-live')"></textarea>
+
+      <div class="live-analysis" id="poster-live">
+        <div class="la-title">🧠 ML Analysis</div>
+        <div id="poster-live-result"></div>
+      </div>
+
+      <label>Select Image (PNG, JPG, PDF poster)</label>
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('poster-file').click()">
+        <input type="file" id="poster-file" accept="image/*,.pdf" onchange="handleFileSelect(this)">
+        <div class="uz-icon">📁</div>
+        <p>Click to select or drag an image here</p>
+        <small>PNG, JPG, JPEG, PDF — max 5MB</small>
+      </div>
+
+      <div class="progress-wrap" id="upload-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Uploading...</div>
+      </div>
+
+      <div class="img-preview" id="img-preview">
+        <img id="preview-img" src="" alt="Preview">
+        <div class="img-name" id="img-name"></div>
+      </div>
+
+      <div class="ml-result" id="ml-result">
+        <div class="ml-priority" id="ml-priority-text"></div>
+        <div style="color:#555;font-size:13px;margin-top:4px;" id="ml-message-text"></div>
+        <div class="ml-keywords" id="ml-keywords"></div>
+      </div>
+
+      <label>Section/Class Group</label>
+      <input type="text" id="poster-section" placeholder="e.g. 5F or ALL" value="ALL">
+
+      <button class="btn btn-green" id="post-poster-btn" onclick="postPosterAnnouncement()" disabled>
+        🖼️ Analyze & Post Poster
+      </button>
+      <p class="msg ok" id="poster-ok"></p>
+      <p class="msg err" id="poster-err"></p>
+    </div>
+
+    <div class="card-box">
+      <h3>🕘 Past Announcements</h3>
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+        <button class="btn" style="margin-top:0;padding:8px 16px;font-size:13px;" onclick="loadAnnouncements()">↻
+          Refresh</button>
+        <button onclick="loadAnnouncements(true)"
+          style="background:#fff;color:#007bff;border:1px solid #007bff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;">Show
+          All (incl. expired)</button>
+      </div>
+      <ul class="ann-list" id="ann-list">
+        <li class="spinner">Loading...</li>
+      </ul>
+    </div>
+  </main>
+<script src="announcement.js"></script>
+</body>
+
+</html>

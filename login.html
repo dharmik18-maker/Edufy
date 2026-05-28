@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduFy — Login</title>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+<link rel="stylesheet" href="login.css">
+  </head>
+
+  <body>
+    <a href="home.html" class="home-btn">
+      <box-icon name="home" type="solid" color="white"></box-icon>
+    </a>
+
+    <img
+      src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/512/external-school-bag-back-to-school-flatart-icons-outline-flatarticons.png"
+      class="bg-item bag"
+      alt=""
+    />
+    <img
+      src="https://img.icons8.com/ios-filled/500/pencil.png"
+      class="bg-item pen"
+      alt=""
+    />
+    <img
+      src="https://img.icons8.com/ios-filled/500/book.png"
+      class="bg-item book"
+      alt=""
+    />
+
+    <div class="login-box">
+      <h2 class="title">Welcome Back 👋</h2>
+      <p class="quote">"Stay ahead. Every class matters."</p>
+
+      <!-- Role selector -->
+      <div class="role-selector">
+        <div
+          class="role-btn selected"
+          data-role="student"
+          onclick="selectRole('student', this)"
+        >
+          🎓 Student
+        </div>
+        <div
+          class="role-btn"
+          data-role="teacher"
+          onclick="selectRole('teacher', this)"
+        >
+          👨‍🏫 Teacher
+        </div>
+        <div
+          class="role-btn"
+          data-role="mentor"
+          onclick="selectRole('mentor', this)"
+        >
+          🧑‍🎓 Mentor
+        </div>
+        <div
+          class="role-btn"
+          data-role="admin"
+          onclick="selectRole('admin', this)"
+        >
+          🛡️ Admin
+        </div>
+      </div>
+
+      <form id="login-form">
+        <div class="input-box">
+          <label>Email</label>
+          <div class="input-field">
+            <box-icon name="user" type="solid" color="#6b7280"></box-icon>
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+        </div>
+
+        <div class="input-box">
+          <label>Password</label>
+          <div class="input-field">
+            <box-icon name="lock-alt" type="solid" color="#6b7280"></box-icon>
+            <input
+              type="password"
+              id="password"
+              required
+              placeholder="Enter your password"
+            />
+            <box-icon
+              id="togglePass"
+              name="show"
+              color="#6b7280"
+              style="cursor: pointer; flex-shrink: 0"
+            ></box-icon>
+          </div>
+        </div>
+
+        <button class="btn" type="submit" id="login-btn">Login</button>
+        <p id="error-message" class="error-msg"></p>
+        <p id="success-message" class="success-msg"></p>
+
+        <!--
+        ── TEACHER INFO CARD ──────────────────────────────────────────
+        Shown briefly after a successful teacher login so the teacher
+        can confirm their section / coordinator status before the page
+        redirects to the dashboard.
+      -->
+        <div class="teacher-info-card" id="teacherInfoCard">
+          <div class="ti-row">
+            <span class="ti-label">👨‍🏫 Name</span>
+            <span id="ti-name">—</span>
+          </div>
+          <div class="ti-row">
+            <span class="ti-label">📚 Subject</span>
+            <span id="ti-subject" class="ti-badge">—</span>
+          </div>
+          <div class="ti-row">
+            <span class="ti-label">🏫 Section</span>
+            <span id="ti-section" class="ti-badge">—</span>
+          </div>
+          <div class="ti-row" id="ti-coord-row" style="display: none">
+            <span class="ti-label">🎓 Role</span>
+            <span class="ti-coordinator">Class Coordinator</span>
+          </div>
+          <div class="ti-row">
+  <span class="ti-label">📚 Classes</span>
+
+  <span id="ti-sections">
+    —
+  </span>
+</div>
+        </div>
+      </form>
+
+      <div class="divider">— or —</div>
+      <div class="register-link">
+        Don't have an account?
+        <a
+          href="#"
+          onclick="
+            alert('Please contact your administrator to create an account.');
+            return false;
+          "
+          >Register here</a
+        >
+      </div>
+    </div>
+
+<script src="login.js"></script>
+  </body>
+</html>

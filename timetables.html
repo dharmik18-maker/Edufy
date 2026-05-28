@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Timetable — EduFy</title>
+ <link rel="stylesheet" href="timetables.css">
+</head>
+<body>
+<header class="header">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <h1>My Timetable — EduFy</h1>
+  </div>
+  <button class="logout" onclick="window.location.href='login.html'">Logout</button>
+</header>
+
+<aside class="sidebar" id="sidebar">
+  <a href="student_dashboard.html">🏠 <span>Home</span></a>
+  <a href="timetables.html">📅 <span>Timetable</span></a>
+  <a href="recent_attendance.html">🧾 <span>Attendance</span></a>
+  <a href="login.html">🚪 <span>Logout</span></a>
+</aside>
+
+<main class="content">
+  <button class="back-btn" onclick="window.location.href='student_dashboard.html'">← Back to Dashboard</button>
+  <h2>📅 My Weekly Timetable</h2>
+
+  <div class="tt-wrap">
+    <table id="tt-table">
+      <thead>
+        <tr>
+          <th>Time Slot</th>
+          <th id="th-mon">Monday</th>
+          <th id="th-tue">Tuesday</th>
+          <th id="th-wed">Wednesday</th>
+          <th id="th-thu">Thursday</th>
+          <th id="th-fri">Friday</th>
+          <th id="th-sat">Saturday</th>
+        </tr>
+      </thead>
+      <tbody id="tt-body">
+        <tr><td colspan="7" style="text-align:center;color:#888;padding:24px;">Loading timetable...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span><div class="dot"></div> Subject &amp; Teacher</span>
+    <span style="background:#f0f7ff;padding:2px 8px;border-radius:4px;">Today's classes highlighted</span>
+  </div>
+</main>
+
+<script src="student_dashboard.js"></script>
+<script src="timetables.js">
+ 
+</script>
+</body>
+</html>

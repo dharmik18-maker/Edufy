@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Dashboard — EduFy</title>
+<link rel="stylesheet" href="teacher_dashboard.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1>EduFy — Teacher Dashboard</h1>
+    <button class="logout" id="btnLogout">Logout</button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="teacher_dashboard.html" class="active">🏠 Home</a>
+    <a href="announcement.html">📢 Announcements</a>
+    <a href="teacher_students.html">👥 View Students</a>
+    <a href="#" id="sideOpenAnns">🕘 Past Announcements</a>
+    <a href="#" id="sideSmartNotifs">🔔 Smart Notifications</a>
+    <!--<a href="#" id="sideMentorSystem">👨‍🏫 Mentor System</a>-->
+    <!-- COORDINATOR LINK — shown only if teacher has a section -->
+    <a
+href="#"
+id="sideTimetable"
+onclick="toggleSection('teacher-view-timetable')"
+class="coordinator-link"
+style="display:none;"
+>
+📖 View Timetable
+</a>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+    <h2 id="welcomeTitle">Welcome, Teacher 👨‍🏫</h2>
+
+    <!-- COORDINATOR BANNER — shown only if teacher has a section -->
+    <div class="coordinator-banner" id="coordinatorBanner" style="display:none;">
+      <div class="cb-icon">🎓</div>
+      <div class="cb-text">
+        <h3>You are a Class Coordinator</h3>
+        <p id="coordinatorDesc">You can manage the timetable for your assigned section.</p>
+      </div>
+      <div class="cb-badge" id="coordinatorBadge">Section —</div>
+    </div>
+
+    <!-- Quick-action cards -->
+    <div class="cards">
+      <div class="card" onclick="window.location.href='announcement.html'">
+        <div class="card-icon">📢</div>
+        Make Announcement
+      </div>
+      <div class="card" onclick="openAttendance()">
+        <div class="card-icon">✅</div>
+        Take Attendance
+      </div>
+      <div class="card" onclick="window.location.href='teacher_students.html'">
+        <div class="card-icon">👥</div>
+        View Students
+      </div>
+      <div class="card" id="cardPastAnns">
+        <div class="card-icon">🕘</div>
+        Past Announcements
+      </div>
+      <div class="card" onclick="toggleSection('smart-notif-sec')">
+        <div class="card-icon">🔔</div>
+        Smart Notifications
+      </div>
+      <!-- VIEW TIMETABLE -->
+<div
+class="card"
+onclick="toggleSection('teacher-view-timetable')"
+>
+
+<div class="card-icon">
+📖
+</div>
+
+View Timetable
+
+</div>
+      <!-- COORDINATOR CARD — shown only if teacher has a section -->
+      <div class="card card-green" id="cardTimetable" style="display:none;" onclick="toggleSection('timetable-sec')">
+        <div class="card-icon">📅</div>
+        Manage Timetable
+      </div>
+    </div>
+
+    <!-- ===== ATTENDANCE PANEL ===== -->
+    <div class="data-section" id="att-panel" style="display:none;">
+      <h3>✅ Take Attendance — Today's Classes</h3>
+      <div id="att-classes">
+        <p style="color:#666;">Loading classes...</p>
+      </div>
+      <div id="att-roster-wrap" style="display:none;margin-top:16px;">
+        <h3 id="att-class-title" style="color:#007bff;margin-bottom:10px;">Class</h3>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <button id="mark-all-present" class="btn">✓ Mark All Present</button>
+          <button id="save-att" class="btn btn-green">💾 Save Attendance</button>
+          <button id="close-class" class="btn" style="background:#fd7e14;">🔒 Close & Mark Absent</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Email</th>
+              <th>Present?</th>
+            </tr>
+          </thead>
+          <tbody id="att-roster"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- ===== VIEW TIMETABLE PANEL ===== -->
+
+<div
+class="data-section"
+id="teacher-view-timetable"
+style="display:none;"
+>
+
+<h3>
+📖 View Timetable
+</h3>
+
+<div style="margin-bottom:15px;">
+
+<select
+id="teacher-tt-section"
+onchange="loadTeacherTimetable()"
+style="
+padding:8px 12px;
+border-radius:8px;
+border:1px solid #ccc;
+font-weight:600;
+"
+>
+
+</select>
+
+</div>
+
+<div class="tt-table-wrap">
+
+<table class="tt-table">
+
+<thead>
+
+<tr>
+
+<th>Day</th>
+<th>Start</th>
+<th>End</th>
+<th>Subject</th>
+<th>Teacher</th>
+<th>Room</th>
+
+</tr>
+
+</thead>
+
+<tbody id="teacher-tt-body">
+
+<tr>
+
+<td colspan="6">
+
+Loading...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+    <!-- ===== COORDINATOR TIMETABLE PANEL ===== -->
+    <div class="data-section" id="timetable-sec" style="display:none;">
+      <div class="timetable-header">
+        <h3>📅 Timetable Management</h3>
+        <span class="section-badge" id="ttSectionBadge">Section —</span>
+      </div>
+
+      <!-- Stats row -->
+      <div class="tt-stats" id="ttStats" style="display:none;">
+        <span class="tt-stat-chip" id="ttTotalClasses">0 Classes</span>
+        <span class="tt-stat-chip" id="ttTotalDays">0 Days</span>
+      </div>
+
+      <!-- Add class form -->
+      <div class="add-class-form">
+        <div class="form-title">➕ Add New Class</div>
+        <div class="form-grid">
+          <select id="tt-day">
+            <option value="">Select Day *</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+          </select>
+          <input type="time" id="tt-start" placeholder="Start Time *" />
+          <input type="time" id="tt-end" placeholder="End Time" />
+          <input type="text" id="tt-subject" placeholder="Subject Name *" />
+          <input type="text" id="tt-teacher" placeholder="Teacher Name (default: you)" />
+          <input type="text" id="tt-room" placeholder="Room No." />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-green" id="btnAddClass" onclick="addTimetableClass()">➕ Add Class</button>
+          <button class="btn" style="background:#6c757d;" onclick="loadTimetable()">↻ Refresh</button>
+        </div>
+      </div>
+
+      <!-- Timetable table -->
+      <div class="tt-table-wrap">
+        <table class="tt-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Start</th>
+              <th>End</th>
+              <th>Subject</th>
+              <th>Teacher</th>
+              <th>Room</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tt-tbody">
+            <tr><td colspan="7" class="tt-empty">Loading timetable...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== SMART NOTIFICATIONS PANEL ===== -->
+    <div class="data-section" id="smart-notif-sec" style="display:none;">
+      <h3>🔔 Smart Notification System</h3>
+
+      <div class="notif-compose">
+        <label>Notification Message</label>
+        <textarea id="notif-msg" placeholder="e.g. Exam tomorrow at 9am. Attendance is mandatory."
+          oninput="previewPriority(this.value)"></textarea>
+        <div id="priority-preview" class="priority-preview">● <span id="preview-text">—</span> Priority Predicted</div>
+        <div class="compose-row">
+          <div>
+            <label>Sent By</label>
+            <input id="notif-sender" placeholder="Your name" />
+          </div>
+          <div>
+            <label>Target</label>
+            <select id="notif-target">
+              <option value="all">All</option>
+              <option value="student">Students</option>
+              <option value="teacher">Teachers</option>
+            </select>
+          </div>
+          <button class="btn" id="send-notif-btn" onclick="sendSmartNotif()">Send Notification ➤</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="background:#fff5f5;border:1px solid #ffcdd2;padding:12px 20px;border-radius:8px;text-align:center;min-width:100px;">
+          <div style="font-size:22px;font-weight:700;color:#dc3545;" id="tc-high">—</div>
+          <div style="font-size:12px;color:#888;">High Priority</div>
+        </div>
+        <div style="background:#fff8f0;border:1px solid #ffe0b2;padding:12px 20px;border-radius:8px;text-align:center;min-width:100px;">
+          <div style="font-size:22px;font-weight:700;color:#fd7e14;" id="tc-medium">—</div>
+          <div style="font-size:12px;color:#888;">Medium Priority</div>
+        </div>
+        <div style="background:#f5fff8;border:1px solid #c8e6c9;padding:12px 20px;border-radius:8px;text-align:center;min-width:100px;">
+          <div style="font-size:22px;font-weight:700;color:#28a745;" id="tc-low">—</div>
+          <div style="font-size:12px;color:#888;">Low Priority</div>
+        </div>
+      </div>
+
+      <div class="notif-tabs">
+        <button class="ntab tab-high" onclick="switchNTab('high',this)">🔴 High <span id="tcnt-high">(0)</span></button>
+        <button class="ntab tab-medium" onclick="switchNTab('medium',this)">🟠 Medium <span id="tcnt-medium">(0)</span></button>
+        <button class="ntab tab-low" onclick="switchNTab('low',this)">🟢 Low <span id="tcnt-low">(0)</span></button>
+      </div>
+      <div class="notif-section active" id="tn-high"></div>
+      <div class="notif-section" id="tn-medium"></div>
+      <div class="notif-section" id="tn-low"></div>
+    </div>
+
+
+  <!-- PAST ANNOUNCEMENTS MODAL -->
+  <div id="annModal" class="modal">
+    <div class="modal__overlay"></div>
+    <div class="modal__dialog">
+      <div class="modal__header">
+        <h3>📢 Past Announcements</h3>
+        <button class="btn" id="annClose">✕</button>
+      </div>
+      <div class="modal__body">
+        <ul id="annModalList" class="annlist">
+          <li style="color:#888;">Loading…</li>
+        </ul>
+      </div>
+      <div class="modal__footer">
+        <button class="btn" id="annClose2">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT CLASS MODAL -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <h3>✏️ Edit Class</h3>
+      <input type="hidden" id="edit-id" />
+      <div class="modal-form-grid">
+        <select id="edit-day">
+          <option value="">Select Day *</option>
+          <option>Monday</option>
+          <option>Tuesday</option>
+          <option>Wednesday</option>
+          <option>Thursday</option>
+          <option>Friday</option>
+          <option>Saturday</option>
+        </select>
+        <input type="time" id="edit-start" />
+        <input type="time" id="edit-end" />
+        <input type="text" id="edit-subject" placeholder="Subject *" />
+        <input type="text" id="edit-teacher" placeholder="Teacher Name" />
+        <input type="text" id="edit-room" placeholder="Room No." />
+      </div>
+      <div class="modal-actions">
+        <button class="btn" style="background:#6c757d;" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-green" onclick="saveEditClass()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- SCRIPTS -->
+  <script src="http://localhost:5002/socket.io/socket.io.js"></script>
+  <script src="teacher_attendance.js" defer></script>
+  <script src="teacher_dashboard.js">
+  </script>
+</body>
+
+</html>
